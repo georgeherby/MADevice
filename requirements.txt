@@ -1,0 +1,5 @@
+configargparse
+python-dateutil
+requests
+tabulate
+git+https://github.com/Rapptz/discord.py@rewrite
