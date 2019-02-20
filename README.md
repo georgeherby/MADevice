@@ -7,10 +7,17 @@ git
 ## Requirements
 * Python 3.7 (Only tested on 3.7, other Python 3 versions may work)
 
+> WHERE IT SAYS `python[3[.7]]` or  `pip[3[.7]]` DON'T JUST COPY AND PASTE. EITHER RUN:
+> * `pip` if you only have python 3 installed
+> * `pip3` if you only have one python 3 installed
+> * `pip3.7` if you have multiple python 3 installs.
 
 ## Setup
 * Clone this repo
-* Run `pip[3[.7]] install -r requirements.txt`
+* You **MUST** create a virtual environment as this and MAD use different websocket versions.
+   * Go to the folder containing MADevice. Within this folder run `python[3[.7]] -m venv py3`. This will create a folder within called `py3`
+   * Within this there is a `bin` folder and in this there is the pip and python installs for this envrionment.
+* Once you have a venv run from in the MADevice folder `<PATH_TO_VENV_BIN>/pip[3[.7]] install -r requirements.txt`
 * Ensure you have entered your server details and name into `servers.json` (take a copy from `server.json.example`)
     * This should be the IP and the port.
 * Create `config.ini` from `config.ini.example` and populate the value which says `REQUIRED`
@@ -19,7 +26,7 @@ git
 ## Run
 
 ```
-python[3[.7]] main.py
+<PATH_TO_VENV_BIN>/python[3[.7]] main.py
 ```
 
 
