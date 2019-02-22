@@ -72,4 +72,5 @@ def alert_thread(log):
         else:
             log.debug("There is no errors to report, doing to sleep..")
 
-        time.sleep(60)
+        log.info("Sleeeeeeppppp!")
+        time.sleep(60 * alert_time)
