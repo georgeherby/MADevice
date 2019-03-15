@@ -1,41 +1,55 @@
 import asyncio
 import json
+import logging
 
 import discord
-from tabulate import tabulate
 import requests
+from dateutil import parser
+from tabulate import tabulate
+
 from run_args import get_args
+
 args = get_args()
+log = logging.getLogger('__name__')
 
 
 class MyClient(discord.Client):
 
-    def __init__(self, log):
+    def __init__(self):
         discord.Client.__init__(self)
-        self.log = log
 
     async def on_ready(self):
-        self.log.info(f"Logged in as {self.user.name} {self.user.id}")
+        log.info(f"Logged in as {self.user.name} {self.user.id}")
 
     async def on_message(self, message):
-        if message.content.startswith('!status') and message.channel.id == int(args.alert_channel_id):
+        if message.content.startswith('!status'):
             with open('servers.json') as f:
                 data = json.load(f)
                 for server in data:
-                    r = requests.get(f'http://{server["ip"]}/get_status').json()
-                    header = ['Origin', 'Route', 'Route Position', 'Last MITM Data']
-                    data = []
-                    for device in r:
-                        data.append([device['origin'],
-                                     device['routemanager'],
-                                     f"{device['routePos']}/{device['routeMax']}",
-                                     device['lastProtoDateTime']
-                                     ])
+                    if message.channel.id == int(server['status_channel_id']):
+                        log.info(f"Status request received for {server['name']}")
+                        r = requests.get(f'http://{server["ip"]}/get_status').json()
+                        header = ['Origin', 'Route', 'Pos', 'Last Data']
+                        data = []
+                        for device in r:
+                            try:
+                                dt = parser.parse(device['lastProtoDateTime'])
+                                last_proto_time = dt.strftime("%H:%M")
+                            except ValueError:
+                                last_proto_time = 'Unknown'
+                            except Exception:
+                                last_proto_time = 'Unknown'
 
-                    await message.channel.send(f"__**{server['name']}**__\n```{tabulate(data, headers=header)} ```")
+                            data.append([device['origin'],
+                                         device['routemanager'],
+                                         f"{device['routePos']}/{device['routeMax']}",
+                                         last_proto_time
+                                         ])
+                        log.debug(f"Sending status table for {server['name']}")
+                        await message.channel.send(f"__**{server['name']}**__\n```{tabulate(data, headers=header)} ```")
 
 
-def run(log):
+def run():
     asyncio.set_event_loop(asyncio.new_event_loop())
-    client = MyClient(log)
+    client = MyClient()
     client.run(args.discord_token)
