@@ -1,4 +1,2 @@
 discord_token=REQUIRED
-alert_channel_webhook=REQUIRED
-alert_recheck_time=OPTIONAL_DEFAULT_20
-alert_channel_id=REQUIRED
+# alert_recheck_time=OPTIONAL_DEFAULT_20

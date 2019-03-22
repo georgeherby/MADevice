@@ -31,13 +31,13 @@ git
 
 
 ### No Data Alert
-When running it will check the last received time for data and then if it is more than 20 minutes (or the values set in `alert_recheck_time`) in the past it will post a message to the channel set by `alert_channel_webhook`
+When running it will check the last received time for data and then if it is more than 20 minutes (or the values set in `alert_recheck_time`) in the past it will post a message to the channel set by `webhook` in `servers.json`
 
 ![alert image](images/alert.png)
 
 ### On-Demand Status (`!status`)
 
-If you type `!status` in the channel set by `alert_channel_id`  You get an on-demand update across all servers (set in servers.json) and posted into Discord rather than opening up multiple browsers to see the data.
+If you type `!status` in the channel set by `status_channel_id` in servers.json  You get an on-demand update across all servers (set in servers.json) and posted into Discord rather than opening up multiple browsers to see the data.
 
 ![status image](images/status.png)
 
@@ -45,11 +45,11 @@ If you type `!status` in the channel set by `alert_channel_id`  You get an on-de
 
 ## FAQ
 
-#### How to get `alert_channel_id`?
+#### How to get `status_channel_id`?
 
 Enable developer mode -> https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-
 
-Then go to the channel you want the messages to be posted in. Right-click and select `Copy ID` and paste in `config.ini`
+Then go to the channel you want the messages to be posted in. Right-click and select `Copy ID` and paste in `servers.json`
 
 #### How to create Discord token?
 
