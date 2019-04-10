@@ -52,8 +52,7 @@ def alert_thread():
 
                             if last_proto_date_time < latest_acceptable_time:
                                 log.info(f"{origin} breached the time threshold")
-                                description = description + \
-                                              f"{origin.capitalize()} (Last Received: {last_proto_date_time.strftime('%H:%M')})\n"
+                                description = description + f"{origin.capitalize()} (Last Received: {last_proto_date_time.strftime('%H:%M')})\n"
                                 log.debug(f"Current description: {description}")
                             else:
                                 log.debug(f"{origin} did not breach the time threshold")
