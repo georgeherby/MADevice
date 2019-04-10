@@ -62,7 +62,7 @@ def alert_thread():
                     if len(description) > len(description_initial):
                         discord_data['embeds'][0]['description'] = description
 
-                        next_check_time = (datetime.now() + timedelta(minutes=20)).strftime('%H:%M')
+                        next_check_time = (datetime.now() + timedelta(minutes=args.alert_recheck_time)).strftime('%H:%M')
 
                         discord_data['embeds'][0]['footer']['text'] = f"Next check will be at {next_check_time}"
 
