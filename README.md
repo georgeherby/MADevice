@@ -33,7 +33,7 @@ git
 ### No Data Alert
 When running it will check the last received time for data and then if it is more than 20 minutes (or the values set in `alert_recheck_time`) in the past it will post a message to the channel set by `webhook` in `servers.json`
 
-![alert image](images/alert.png)
+![alert image](images/alert.png) <!-- .element width="150px" -->
 
 ### On-Demand Status (`!status`)
 
