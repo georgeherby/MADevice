@@ -1,11 +1,10 @@
 import json
 import logging
 import time
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 import requests
 from dateutil.parser import parse
-from dateutil.tz import tz
 
 from run_args import get_args
 
@@ -45,8 +44,8 @@ def alert_thread():
                         origin = str(device['origin'])
                         if len(device['lastProtoDateTime']) > 0:
 
-                            last_proto_date_time = parse(device['lastProtoDateTime']).replace(tzinfo=timezone.utc).astimezone(tz=None)
-                            latest_acceptable_time = (datetime.now() - timedelta(minutes=alert_time)).astimezone(tz=tz.tzlocal())
+                            last_proto_date_time = parse(device['lastProtoDateTime'])
+                            latest_acceptable_time = (datetime.now() - timedelta(minutes=alert_time))
                             log.debug(f"Last Proto Date Time: {last_proto_date_time}")
                             log.debug(f"Last Acceptable Time: {latest_acceptable_time}")
 

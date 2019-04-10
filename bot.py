@@ -1,7 +1,6 @@
 import asyncio
 import json
 import logging
-from datetime import timezone
 
 import discord
 import requests
@@ -34,7 +33,7 @@ class MyClient(discord.Client):
                         data = []
                         for device in r:
                             try:
-                                dt = parser.parse(device['lastProtoDateTime']).replace(tzinfo=timezone.utc).astimezone(tz=None)
+                                dt = parser.parse(device['lastProtoDateTime'])
                                 last_proto_time = dt.strftime("%H:%M")
                             except ValueError:
                                 last_proto_time = 'Unknown'
