@@ -19,34 +19,32 @@ class MyClient(discord.Client):
         discord.Client.__init__(self)
 
     async def on_ready(self):
-        log.info(f"Logged in as {self.user.name} {self.user.id}")
+        log.info(f"Logged in. Username: {self.user.name}. User ID:{self.user.id}")
 
     async def on_message(self, message):
         if message.content.startswith('!status'):
             with open('servers.json') as f:
-                data = json.load(f)
-                for server in data:
+                servers_config_json = json.load(f)
+                for server in servers_config_json:
                     if message.channel.id == int(server['status_channel_id']):
                         log.info(f"Status request received for {server['name']}")
-                        r = requests.get(f'http://{server["ip"]}/get_status').json()
-                        header = ['Origin', 'Route', 'Pos', 'Last Data']
-                        data = []
-                        for device in r:
+                        device_status_response = requests.get(f'http://{server["ip"]}/get_status').json()
+                        table_header = ['Origin', 'Route', 'Pos', 'Last Data']
+                        table_contents = []
+                        for device in device_status_response:
                             try:
-                                dt = parser.parse(device['lastProtoDateTime'])
-                                last_proto_time = dt.strftime("%H:%M")
-                            except ValueError:
-                                last_proto_time = 'Unknown'
+                                datetime_from_status_json = parser.parse(device['lastProtoDateTime'])
+                                formatted_device_last_proto_time = datetime_from_status_json.strftime("%H:%M")
                             except Exception:
-                                last_proto_time = 'Unknown'
+                                formatted_device_last_proto_time = 'Unknown'
 
-                            data.append([device['origin'],
-                                         device['routemanager'],
-                                         f"{device['routePos']}/{device['routeMax']}",
-                                         last_proto_time
-                                         ])
+                            table_contents.append([device['origin'],
+                                                   device['routemanager'],
+                                                   f"{device['routePos']}/{device['routeMax']}",
+                                                   formatted_device_last_proto_time
+                                                   ])
                         log.debug(f"Sending status table for {server['name']}")
-                        await message.channel.send(f"__**{server['name']}**__\n```{tabulate(data, headers=header)} ```")
+                        await message.channel.send(f"__**{server['name']}**__\n```{tabulate(table_contents, headers=table_header)}```")
 
 
 def run():

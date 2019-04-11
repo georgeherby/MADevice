@@ -17,7 +17,11 @@ class InfoFilter(logging.Filter):
 args = get_args()
 
 log = logging.getLogger('__name__')
-log.setLevel(logging.DEBUG)
+
+if args.verbose:
+    log.setLevel(logging.DEBUG)
+else:
+    log.setLevel(logging.INFO)
 
 formatter = ColoredFormatter(
     '%(log_color)s [%(asctime)s] [%(threadName)16s] [%(module)14s:%(lineno)d]' +
