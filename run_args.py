@@ -7,7 +7,10 @@ def get_args():
     parser.add_argument('-dt', '--discord_token', required=True, type=str,
                         help='Enter token for discord')
 
-    parser.add_argument('-art', '--alert_recheck_time', required=False, default=20, type=int,
+    parser.add_argument('-dba', '--duration_before_alert', required=False, default=20, type=int,
+                        help='Enter the number of minutes a device can go before an alert is triggered  (Default: 20)')
+
+    parser.add_argument('-dbc', '--delay_between_checks', required=False, default=20, type=int,
                         help='Enter time you want to wait before rechecking status (Default: 20)')
 
     parser.add_argument('-v', '--verbose', required=False, default=False, type=bool,

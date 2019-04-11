@@ -21,7 +21,9 @@ git
 * Ensure you have entered your server details and name into `servers.json` (take a copy from `server.json.example`)
     * This should be the IP and the port.
 * Create `config.ini` from `config.ini.example` and populate the value which says `REQUIRED`
-
+    * Optional config
+        * `duration_before_alert` this is the number of minutes that MAD has not received any proto data for, before it raises an alert (Default: 20 minutes)
+        * `delay_between_checks` this is the amount of time that MADevice does to sleep before checking the status of the devices again (Default: 20 minutes)
 
 ## Run
 
@@ -33,7 +35,7 @@ git
 ### No Data Alert
 When running it will check the last received time for data and then if it is more than 20 minutes (or the values set in `alert_recheck_time`) in the past it will post a message to the channel set by `webhook` in `servers.json`
 
-![alert image](images/alert.png) <!-- .element width="150px" -->
+![alert image](images/alert.png)
 
 ### On-Demand Status (`!status`)
 

@@ -14,12 +14,13 @@ log = logging.getLogger('__name__')
 
 def alert_thread():
     try:
-        alert_time = args.alert_recheck_time
+        duration_before_alert = args.duration_before_alert
+        delay_between_checks = args.delay_between_checks
         discord_data = {
             "username": "MAD Alert",
             "avatar_url": "https://www.iconsdb.com/icons/preview/red/exclamation-xxl.png",
             "embeds": [{
-                "title": f"ERROR - No data for {alert_time} minutes!",
+                "title": f"ERROR - No data for {duration_before_alert} minutes!",
                 "color": 16711680,
                 "description": "PLACEHOLDER",
                 "footer": {
@@ -39,13 +40,13 @@ def alert_thread():
                     r = requests.get(f'http://{server["ip"]}/get_status').json()
 
                     for device in r:
-                        log.info(f"Doing check for {device['origin']}")
+                        log.info(f"Checking {device['origin']}")
                         log.debug(device)
                         origin = str(device['origin'])
                         if len(device['lastProtoDateTime']) > 0:
 
                             last_proto_date_time = parse(device['lastProtoDateTime'])
-                            latest_acceptable_time = (datetime.now() - timedelta(minutes=alert_time))
+                            latest_acceptable_time = (datetime.now() - timedelta(minutes=duration_before_alert))
                             log.debug(f"Last Proto Date Time: {last_proto_date_time}")
                             log.debug(f"Last Acceptable Time: {latest_acceptable_time}")
 
@@ -61,7 +62,7 @@ def alert_thread():
                     if len(description) > len(description_initial):
                         discord_data['embeds'][0]['description'] = description
 
-                        next_check_time = (datetime.now() + timedelta(minutes=args.alert_recheck_time)).strftime('%H:%M')
+                        next_check_time = (datetime.now() + timedelta(minutes=delay_between_checks)).strftime('%H:%M')
 
                         discord_data['embeds'][0]['footer']['text'] = f"Next check will be at {next_check_time}"
 
@@ -83,6 +84,6 @@ def alert_thread():
                         log.debug("There is no errors to report, going to sleep..")
 
             log.info("All device checks completed, going to sleep!")
-            time.sleep(60 * alert_time)
+            time.sleep(60 * delay_between_checks)
     except Exception as ex:
         log.error('Issues in the checker tread exception was: ' + str(ex))
