@@ -1,2 +1,3 @@
 discord_token=REQUIRED
-# alert_recheck_time=OPTIONAL_DEFAULT_20
+# duration_before_alert=OPTIONAL_DEFAULT_20
+# delay_between_checks=OPTIONAL_DEFAULT_200
