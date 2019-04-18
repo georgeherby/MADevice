@@ -38,13 +38,42 @@ class MyClient(discord.Client):
                             except Exception:
                                 formatted_device_last_proto_time = 'Unknown'
 
+                            table_before = tabulate(table_contents, headers=table_header)
+
                             table_contents.append([device['origin'],
                                                    device['routemanager'],
                                                    f"{device['routePos']}/{device['routeMax']}",
                                                    formatted_device_last_proto_time
                                                    ])
+
+                            table_after = tabulate(table_contents, headers=table_header)
+
+                            table_before_len = len(table_before)
+                            table_after_len = len(table_after)
+
+                            log.info(f"{table_before_len} and after {table_after_len}")
+
+                            if table_before_len > 2000:
+                                log.error("Table before exceeds 2000 word count. How did this happened?")
+                                return
+
+                            if table_after_len > 2000:
+                                log.info("Table size was greater than 2000. Commence table split.")
+                                log.debug(table_before)
+                                await message.channel.send(
+                                    f"__**{server['name']}**__\n```{table_before}```")
+
+                                table_contents.clear()
+                                table_contents.append([device['origin'],
+                                                       device['routemanager'],
+                                                       f"{device['routePos']}/{device['routeMax']}",
+                                                       formatted_device_last_proto_time
+                                                       ])
+
                         log.debug(f"Sending status table for {server['name']}")
-                        await message.channel.send(f"__**{server['name']}**__\n```{tabulate(table_contents, headers=table_header)}```")
+                        table_to_send = tabulate(table_contents, headers=table_header)
+                        log.debug(table_to_send)
+                        await message.channel.send(f"__**{server['name']}**__\n```{table_to_send}```")
 
 
 def run():
