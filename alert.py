@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 import requests
 from dateutil.parser import parse
 
+import connector
 from run_args import get_args
 
 args = get_args()
@@ -37,7 +38,7 @@ def alert_thread():
                     description = description_initial
                     discord_post_data['embeds'][0]['description'] = description_initial
                     log.info(f"Starting check on {server['ip']}")
-                    r = requests.get(f'http://{server["ip"]}/get_status').json()
+                    r = connector.get_status(server)
 
                     for device in r:
                         device_origin = str(device['origin']).title()
