@@ -18,8 +18,9 @@ git
    * Go to the folder containing MADevice. Within this folder run `python[3[.7]] -m venv py3`. This will create a folder within called `py3`
    * Within this there is a `bin` folder and in this there is the pip and python installs for this envrionment.
 * Once you have a venv run from in the MADevice folder `<PATH_TO_VENV_BIN>/pip[3[.7]] install -r requirements.txt`
-* Ensure you have entered your server details and name into `servers.json` (take a copy from `server.json.example`)
-    * This should be the IP and the port.
+* Ensure you have entered your server details and name into `servers.json` (take a copy from `servers.json.example`)
+    * This should be the `IP` and the `port`.
+    * If you have set authentication for MADmin, ensure you add `username` and `password` to each of the servers in `servers.json
 * Create `config.ini` from `config.ini.example` and populate the value which says `REQUIRED`
     * Optional config
         * `duration_before_alert` this is the number of minutes that MAD has not received any proto data for, before it raises an alert (Default: 20 minutes)
@@ -30,7 +31,6 @@ git
 ```
 <PATH_TO_VENV_BIN>/python[3[.7]] main.py
 ```
-
 
 ### No Data Alert
 When running it will check the last received time for data and then if it is more than 20 minutes (or the values set in `alert_recheck_time`) in the past it will post a message to the channel set by `webhook` in `servers.json`
