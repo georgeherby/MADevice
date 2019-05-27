@@ -3,10 +3,10 @@ import json
 import logging
 
 import discord
-import requests
 from dateutil import parser
 from tabulate import tabulate
 
+import connector
 from run_args import get_args
 
 args = get_args()
@@ -28,7 +28,9 @@ class MyClient(discord.Client):
                 for server in servers_config_json:
                     if message.channel.id == int(server['status_channel_id']):
                         log.info(f"Status request received for {server['name']}")
-                        device_status_response = requests.get(f'http://{server["ip"]}/get_status').json()
+
+                        device_status_response = connector.get_status(server)
+
                         table_header = ['Origin', 'Route', 'Pos', 'Last Data']
                         table_contents = []
                         for device in device_status_response:

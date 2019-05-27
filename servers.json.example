@@ -3,7 +3,9 @@
     "ip": "127.0.0.1:6100",
     "name": "Server 1",
     "webhook": "https://discordapp.com/api/webhooks/556067789635584000/stuffs",
-    "status_channel_id": 1234567891234567
+    "status_channel_id": 1234567891234567,
+    "username": "username",
+    "password": "password"
   },
   {
     "ip": "127.0.0.1:6101",
@@ -15,6 +17,8 @@
     "ip": "127.0.0.1:6102",
     "name": "Server 3",
     "webhook": "https://discordapp.com/api/webhooks/556067789635584000/stuffs3",
-    "status_channel_id": 1234567891234567
+    "status_channel_id": 1234567891234567,
+    "username": "username",
+    "password": "password"
   }
 ]
