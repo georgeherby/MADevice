@@ -8,12 +8,12 @@ log = logging.getLogger('__name__')
 def get_status(server):
     try:
         if 'username' in server and 'password' in server:
-            log.debug("MADmin auth required")
+            log.info("MADmin auth required")
             return requests.get(f'http://{server["ip"]}/get_status', auth=(server['username'], server['password'])).json()
         else:
             if 'username' in server or 'password' in server:
                 log.warning("Ensure both username and password are set to use authenticated MADmin")
-            log.debug("No MADmin auth required")
+            log.info("No MADmin auth required")
             return requests.get(f'http://{server["ip"]}/get_status').json()
     except requests.exceptions.Timeout:
         log.error("Connection to get_status timed-out")
