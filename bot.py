@@ -53,7 +53,7 @@ class MyClient(discord.Client):
                             table_before_len = len(table_before)
                             table_after_len = len(table_after)
 
-                            log.info(f"{table_before_len} and after {table_after_len}")
+                            log.debug(f"{table_before_len} and after {table_after_len}")
 
                             if table_before_len > 2000:
                                 log.error("Table before exceeds 2000 word count. How did this happened?")
