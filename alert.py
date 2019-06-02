@@ -43,6 +43,7 @@ def alert_thread():
                     for device in r:
                         device_origin = str(device['origin']).title()
                         device_last_proto_datetime = device['lastProtoDateTime']
+                        routemanager = str(device['routemanager']).title()
 
                         log.info(f"Checking {device_origin} device")
                         log.debug(device)
@@ -54,7 +55,7 @@ def alert_thread():
 
                             if parsed_device_last_proto_datetime < latest_acceptable_datetime:
                                 log.info(f"{device_origin} breached the time threshold")
-                                description = description + f"{device_origin.capitalize()} (Last Received: {parsed_device_last_proto_datetime.strftime('%H:%M')})\n"
+                                description = description + f"{device_origin.capitalize()} - {routemanager} -> (Last Received: {parsed_device_last_proto_datetime.strftime('%H:%M')})\n"
                                 log.debug(f"Current description: {description}")
                             else:
                                 log.info(f"{device_origin} did not breach the time threshold")
