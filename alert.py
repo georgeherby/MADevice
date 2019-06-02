@@ -63,6 +63,10 @@ def alert_thread():
                             description = description + f"{device_origin.capitalize()} (Last Received: Not known)\n"
 
                     if len(description) > len(description_initial):
+
+                        if 'alert_role_id' in server:
+                            discord_post_data['content'] = f"Problem on {server['name']} <@&{server['alert_role_id']}>"
+
                         discord_post_data['embeds'][0]['description'] = description
 
                         time_of_next_check = (datetime.now() + timedelta(minutes=delay_between_checks)).strftime('%H:%M')
