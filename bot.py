@@ -31,7 +31,7 @@ class MyClient(discord.Client):
 
                         device_status_response = connector.get_status(server)
 
-                        table_header = ['Origin', 'Route', 'Pos', 'Last Data']
+                        table_header = ['Origin', 'Route', 'Pos', 'Time']
                         table_contents = []
                         for device in device_status_response:
                             try:
@@ -42,8 +42,20 @@ class MyClient(discord.Client):
 
                             table_before = tabulate(table_contents, headers=table_header)
 
-                            table_contents.append([device['origin'],
-                                                   device['routemanager'],
+                            routemanager = device['routemanager']
+                            origin = device['origin']
+
+                            number_front_chars = 7
+                            number_end_chars = 5
+
+                            if args.trim_table_content:
+                                if len(routemanager) > (number_front_chars + number_end_chars):
+                                    routemanager = f"{routemanager[:number_front_chars]}..{routemanager[-number_end_chars:]}"
+                                if len(origin) > (number_front_chars + number_end_chars):
+                                    origin = f"{origin[:number_front_chars]}..{origin[-number_end_chars:]}"
+
+                            table_contents.append([origin,
+                                                   routemanager,
                                                    f"{device['routePos']}/{device['routeMax']}",
                                                    formatted_device_last_proto_time
                                                    ])
