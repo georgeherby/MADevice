@@ -53,9 +53,9 @@ def alert_thread():
                             log.debug(f"{device_origin} Last Proto Date Time: {parsed_device_last_proto_datetime}")
                             log.debug(f"{device_origin} Last Acceptable Time: {latest_acceptable_datetime}")
 
-                            if parsed_device_last_proto_datetime < latest_acceptable_datetime:
+                            if parsed_device_last_proto_datetime < latest_acceptable_datetime and routemanager.lower() != 'idle':
                                 log.info(f"{device_origin} breached the time threshold")
-                                description = description + f"{device_origin.capitalize()} - {routemanager} -> (Last Received: {parsed_device_last_proto_datetime.strftime('%H:%M')})\n"
+                                description = description + f"{device_origin.capitalize()} - {routemanager} -> (Last Received: {parsed_device_last_proto_datetime.strftime('%H:%M')})\n "
                                 log.debug(f"Current description: {description}")
                             else:
                                 log.info(f"{device_origin} did not breach the time threshold")
