@@ -1,6 +1,6 @@
 [
   {
-    "ip": "127.0.0.1:6100",
+    "ip": "https://127.0.0.1:6100",
     "name": "Server 1",
     "webhook": "https://discordapp.com/api/webhooks/556067789635584000/stuffs",
     "status_channel_id": 1234567891234567,
@@ -9,14 +9,14 @@
     "alert_role_id": 21345678543221123 //Make sure the role has "Allow anyone to @mention this role" enabled
   },
   {
-    "ip": "127.0.0.1:6101",
+    "ip": "http://127.0.0.1:6101",
     "name": "Server 2",
     "webhook": "https://discordapp.com/api/webhooks/556067789635584000/stuffs2",
     "status_channel_id": 1234567891234567,
     "alert_role_id": 21345678543221123 //Make sure the role has "Allow anyone to @mention this role" enabled
   },
   {
-    "ip": "127.0.0.1:6102",
+    "ip": "http://127.0.0.1:6102",
     "name": "Server 3",
     "webhook": "https://discordapp.com/api/webhooks/556067789635584000/stuffs3",
     "status_channel_id": 1234567891234567,
