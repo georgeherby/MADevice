@@ -56,7 +56,7 @@ class MyClient(discord.Client):
 
                             table_contents.append([origin,
                                                    routemanager,
-                                                   f"{device['routePos']}/{device['routeMax']}",
+                                                   f"{device.get('routePos', 'NaN')}/{device.get('routeMax', 'NaN')}'",
                                                    formatted_device_last_proto_time
                                                    ])
 
