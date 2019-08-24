@@ -47,23 +47,25 @@ def alert_thread():
 
                         log.info(f"Checking {device_origin} device")
                         log.debug(device)
-                        if len(device_last_proto_datetime) > 0:
-                            parsed_device_last_proto_datetime = parse(device_last_proto_datetime)
-                            latest_acceptable_datetime = (datetime.now() - timedelta(minutes=duration_before_alert))
-                            log.debug(f"{device_origin} Last Proto Date Time: {parsed_device_last_proto_datetime}")
-                            log.debug(f"{device_origin} Last Acceptable Time: {latest_acceptable_datetime}")
+                        if routemanager.lower() != 'idle':
+                            if len(device_last_proto_datetime) > 0:
+                                parsed_device_last_proto_datetime = parse(device_last_proto_datetime)
+                                latest_acceptable_datetime = (datetime.now() - timedelta(minutes=duration_before_alert))
+                                log.debug(f"{device_origin} Last Proto Date Time: {parsed_device_last_proto_datetime}")
+                                log.debug(f"{device_origin} Last Acceptable Time: {latest_acceptable_datetime}")
 
-                            if parsed_device_last_proto_datetime < latest_acceptable_datetime and routemanager.lower() != 'idle':
-                                log.info(f"{device_origin} breached the time threshold")
-                                description = description + f"{device_origin.capitalize()} - {routemanager} -> (Last Received: {parsed_device_last_proto_datetime.strftime('%H:%M')})\n "
-                                log.debug(f"Current description: {description}")
+                                if parsed_device_last_proto_datetime < latest_acceptable_datetime:
+                                    log.info(f"{device_origin} breached the time threshold")
+                                    description = description + f"{device_origin.capitalize()} - {routemanager} -> (Last Received: {parsed_device_last_proto_datetime.strftime('%H:%M')})\n "
+                                    log.debug(f"Current description: {description}")
+                                else:
+                                    log.info(f"{device_origin} did not breach the time threshold")
                             else:
-                                log.info(f"{device_origin} did not breach the time threshold")
+                                description = description + f"{device_origin.capitalize()} (Last Received: Not known)\n"
                         else:
-                            description = description + f"{device_origin.capitalize()} (Last Received: Not known)\n"
+                            log.info("Ignoring as device is set to idle")
 
                     if len(description) > len(description_initial):
-
                         if 'alert_role_id' in server:
                             discord_post_data['content'] = f"Problem on {server['name']} <@&{server['alert_role_id']}>"
 
