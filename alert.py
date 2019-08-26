@@ -41,9 +41,9 @@ def alert_thread():
                     r = connector.get_status(server)
 
                     for device in r:
-                        device_origin = str(device['origin']).title()
-                        device_last_proto_datetime = device['lastProtoDateTime']
-                        routemanager = str(device['routemanager']).title()
+                        device_origin = str(device.get('origin', '')).title()
+                        device_last_proto_datetime = device.get('lastProtoDateTime', '')
+                        routemanager = str(device.get('routemanager', '')).title()
 
                         log.info(f"Checking {device_origin} device")
                         log.debug(device)
@@ -90,9 +90,9 @@ def alert_thread():
                         else:
                             log.debug("Message posted to Discord with success")
                     else:
-                        log.debug("There is no errors to report, going to sleep..")
+                        log.debug("There is no errors to report, going to sleep")
 
-            log.info("All device checks completed, going to sleep!")
+            log.info("All device checks completed, going to sleep")
             time.sleep(60 * delay_between_checks)
     except Exception as ex:
         log.error('Issues in the checker tread exception was: ' + str(ex))

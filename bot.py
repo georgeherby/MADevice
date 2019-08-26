@@ -27,26 +27,29 @@ class MyClient(discord.Client):
                 servers_config_json = json.load(f)
                 for server in servers_config_json:
                     if message.channel.id == int(server['status_channel_id']):
-                        log.info(f"Status request received for {server['name']}")
-
-                        device_status_response = connector.get_status(server)
-
+                        server_name = server['name']
                         table_header = ['Origin', 'Route', 'Pos', 'Time']
                         table_contents = []
+
+                        log.info(f"Status request received for {server_name}")
+                        log.debug("Calling /get_status for current status")
+                        device_status_response = connector.get_status(server)
+
                         for device in device_status_response:
-                            try:
-                                datetime_from_status_json = parser.parse(device['lastProtoDateTime'])
-                                formatted_device_last_proto_time = datetime_from_status_json.strftime("%H:%M")
-                            except Exception:
-                                formatted_device_last_proto_time = 'Unknown'
-
                             table_before = tabulate(table_contents, headers=table_header)
-
-                            routemanager = device['routemanager']
-                            origin = device['origin']
+                            routemanager = device.get('routemanager', '')
+                            origin = device.get('origin', '')
+                            route_pos = device.get('route_pos', 'NaN')
+                            route_max = device.get('route_max', 'NaN')
 
                             number_front_chars = 7
                             number_end_chars = 5
+
+                            try:
+                                datetime_from_status_json = parser.parse(device.get('lastProtoDateTime', ''))
+                                formatted_device_last_proto_time = datetime_from_status_json.strftime("%H:%M")
+                            except Exception:
+                                formatted_device_last_proto_time = 'Unknown'
 
                             if args.trim_table_content:
                                 if len(routemanager) > (number_front_chars + number_end_chars):
@@ -56,7 +59,7 @@ class MyClient(discord.Client):
 
                             table_contents.append([origin,
                                                    routemanager,
-                                                   f"{device.get('routePos', 'NaN')}/{device.get('routeMax', 'NaN')}'",
+                                                   f"{route_pos}/{route_max}'",
                                                    formatted_device_last_proto_time
                                                    ])
 
@@ -75,19 +78,19 @@ class MyClient(discord.Client):
                                 log.info("Table size was greater than 2000. Commence table split.")
                                 log.debug(table_before)
                                 await message.channel.send(
-                                    f"__**{server['name']}**__\n```{table_before}```")
+                                    f"__**{server_name}**__\n```{table_before}```")
 
                                 table_contents.clear()
-                                table_contents.append([device['origin'],
-                                                       device['routemanager'],
-                                                       f"{device['routePos']}/{device['routeMax']}",
+                                table_contents.append([origin,
+                                                       routemanager,
+                                                       f"{route_pos}/{route_max}'",
                                                        formatted_device_last_proto_time
                                                        ])
 
-                        log.debug(f"Sending status table for {server['name']}")
+                        log.debug(f"Sending status table for {server_name}")
                         table_to_send = tabulate(table_contents, headers=table_header)
                         log.debug(table_to_send)
-                        await message.channel.send(f"__**{server['name']}**__\n```{table_to_send}```")
+                        await message.channel.send(f"__**{server_name}**__\n```{table_to_send}```")
 
 
 def run():
