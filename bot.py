@@ -37,16 +37,16 @@ class MyClient(discord.Client):
 
                         for device in device_status_response:
                             table_before = tabulate(table_contents, headers=table_header)
-                            routemanager = device.get('routemanager', '')
-                            origin = device.get('origin', '')
-                            route_pos = device.get('route_pos', 'NaN')
-                            route_max = device.get('route_max', 'NaN')
-
+                            routemanager = device.get('routemanager', '') if device.get('routemanager', 'Not Defined') is not None else 'Not Defined'
+                            origin = device.get('origin', '') if device.get('origin', '') is not None else ''
+                            route_pos = device.get('routePos', '?') if device.get('routePos', '?') is not None else '?'
+                            route_max = device.get('routeMax', '?') if device.get('routeMax', '?') is not None else '?'
+                            lastProtoDateTime = device.get('lastProtoDateTime', '') if device.get('lastProtoDateTime', '') is not None else ''
                             number_front_chars = 7
                             number_end_chars = 5
 
                             try:
-                                datetime_from_status_json = parser.parse(device.get('lastProtoDateTime', ''))
+                                datetime_from_status_json = parser.parse(lastProtoDateTime)
                                 formatted_device_last_proto_time = datetime_from_status_json.strftime("%H:%M")
                             except Exception:
                                 formatted_device_last_proto_time = 'Unknown'
@@ -59,7 +59,7 @@ class MyClient(discord.Client):
 
                             table_contents.append([origin,
                                                    routemanager,
-                                                   f"{route_pos}/{route_max}'",
+                                                   f"{route_pos}/{route_max}",
                                                    formatted_device_last_proto_time
                                                    ])
 
@@ -83,7 +83,7 @@ class MyClient(discord.Client):
                                 table_contents.clear()
                                 table_contents.append([origin,
                                                        routemanager,
-                                                       f"{route_pos}/{route_max}'",
+                                                       f"{route_pos}/{route_max}",
                                                        formatted_device_last_proto_time
                                                        ])
 

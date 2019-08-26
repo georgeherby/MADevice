@@ -1,6 +1,7 @@
 import json
 import logging
 import time
+import traceback
 from datetime import datetime, timedelta
 
 import requests
@@ -48,7 +49,7 @@ def alert_thread():
                         log.info(f"Checking {device_origin} device")
                         log.debug(device)
                         if routemanager.lower() != 'idle':
-                            if len(device_last_proto_datetime) > 0:
+                            if len(device_last_proto_datetime) > 0 and device_last_proto_datetime is not None and device_last_proto_datetime != 'None':
                                 parsed_device_last_proto_datetime = parse(device_last_proto_datetime)
                                 latest_acceptable_datetime = (datetime.now() - timedelta(minutes=duration_before_alert))
                                 log.debug(f"{device_origin} Last Proto Date Time: {parsed_device_last_proto_datetime}")
@@ -95,4 +96,5 @@ def alert_thread():
             log.info("All device checks completed, going to sleep")
             time.sleep(60 * delay_between_checks)
     except Exception as ex:
+        traceback.print_exc()
         log.error('Issues in the checker tread exception was: ' + str(ex))
