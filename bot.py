@@ -86,7 +86,7 @@ class MyClient(discord.Client):
 
                         log.debug(table_to_send)
                         
-						# New Embeded message (Future Todo: Status colours)
+                        # New Embeded message (Future Todo: Status colours)
                         embed = discord.Embed(description= '```'+table_to_send+'```', colour=0x98FB98)
                         embed.set_thumbnail(url=iconURL)
                         embed.set_author(name=server['name'], url='', icon_url='')
