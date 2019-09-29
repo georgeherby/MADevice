@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+from datetime import datetime, timedelta
 
 import discord
 from dateutil import parser
@@ -13,6 +14,7 @@ args = get_args()
 log = logging.getLogger('__name__')
 
 iconURL = 'https://raw.githubusercontent.com/Map-A-Droid/MAD/master/madmin/static/mad_banner_trans.png'
+
 
 class MyClient(discord.Client):
 
@@ -27,6 +29,7 @@ class MyClient(discord.Client):
             with open('servers.json') as f:
                 servers_config_json = json.load(f)
                 for server in servers_config_json:
+                    error_found = False
                     if message.channel.id == int(server['status_channel_id']):
                         server_name = server['name']
                         table_header = ['Origin', 'Route', 'Pos', 'Time']
@@ -38,18 +41,28 @@ class MyClient(discord.Client):
 
                         for device in device_status_response:
                             table_before = tabulate(table_contents, headers=table_header)
-                            routemanager = device.get('routemanager', '') if device.get('routemanager', 'Not Defined') is not None else 'Not Defined'
+                            routemanager = device.get('routemanager', '') if device.get('routemanager',
+                                                                                        'Not Defined') is not None else 'Not Defined'
                             origin = device.get('origin', '') if device.get('origin', '') is not None else ''
                             route_pos = device.get('routePos', '?') if device.get('routePos', '?') is not None else '?'
                             route_max = device.get('routeMax', '?') if device.get('routeMax', '?') is not None else '?'
-                            lastProtoDateTime = device.get('lastProtoDateTime', '') if device.get('lastProtoDateTime', '') is not None else ''
+                            lastProtoDateTime = device.get('lastProtoDateTime', '') if device.get('lastProtoDateTime',
+                                                                                                  '') is not None else ''
                             number_front_chars = 6
                             number_end_chars = 5
 
                             try:
                                 datetime_from_status_json = parser.parse(lastProtoDateTime)
                                 formatted_device_last_proto_time = datetime_from_status_json.strftime("%H:%M")
-                            except Exception:
+                                latest_acceptable_datetime = (datetime.now() - timedelta(minutes=args.duration_before_alert))
+                                log.debug(f"{origin} Last Proto Date Time: {datetime_from_status_json}")
+                                log.debug(f"{origin} Last Acceptable Time: {latest_acceptable_datetime}")
+
+                                if datetime_from_status_json < latest_acceptable_datetime:
+                                    error_found = True
+
+                            except Exception as e:
+                                error_found = True
                                 formatted_device_last_proto_time = 'Unkwn'
 
                             if args.trim_table_content:
@@ -70,6 +83,9 @@ class MyClient(discord.Client):
                             table_after_len = len(table_after)
 
                             log.debug(f"{table_before_len} and after {table_after_len}")
+                            log.debug("Error" + str(error_found))
+
+                            color = 0xFF6E6E if error_found is True else 0x98FB98
 
                             if table_before_len > 2000:
                                 log.error("Table before exceeds 2000 word count. How did this happened?")
@@ -79,8 +95,7 @@ class MyClient(discord.Client):
                                 log.info("Table size was greater than 2000. Commence table split.")
                                 log.debug(table_before)
 
-                                # New Embeded message (Future Todo: Status colours)
-                                embed = discord.Embed(description='```'+table_before+'```', colour=0x98FB98)
+                                embed = discord.Embed(description='```' + table_before + '```', colour=color)
                                 embed.set_thumbnail(url=iconURL)
                                 embed.set_author(name=server['name'], url='', icon_url='')
                                 await message.channel.send(embed=embed)
@@ -96,9 +111,9 @@ class MyClient(discord.Client):
                         table_to_send = tabulate(table_contents, headers=table_header)
 
                         log.debug(table_to_send)
-                        
+
                         # TODO Status colours
-                        embed = discord.Embed(description= '```'+table_to_send+'```', colour=0x98FB98)
+                        embed = discord.Embed(description='```' + table_to_send + '```', colour=color)
                         embed.set_thumbnail(url=iconURL)
                         embed.set_author(name=server['name'], url='', icon_url='')
                         await message.channel.send(embed=embed)
