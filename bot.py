@@ -43,14 +43,14 @@ class MyClient(discord.Client):
                             route_pos = device.get('routePos', '?') if device.get('routePos', '?') is not None else '?'
                             route_max = device.get('routeMax', '?') if device.get('routeMax', '?') is not None else '?'
                             lastProtoDateTime = device.get('lastProtoDateTime', '') if device.get('lastProtoDateTime', '') is not None else ''
-                            number_front_chars = 7
+                            number_front_chars = 6
                             number_end_chars = 5
 
                             try:
                                 datetime_from_status_json = parser.parse(lastProtoDateTime)
                                 formatted_device_last_proto_time = datetime_from_status_json.strftime("%H:%M")
                             except Exception:
-                                formatted_device_last_proto_time = 'Unknown'
+                                formatted_device_last_proto_time = 'Unkwn'
 
                             if args.trim_table_content:
                                 if len(routemanager) > (number_front_chars + number_end_chars):
@@ -78,19 +78,12 @@ class MyClient(discord.Client):
                             if table_after_len > 2000:
                                 log.info("Table size was greater than 2000. Commence table split.")
                                 log.debug(table_before)
-								
-                                # New Embeded message (Future Todo: Status colours)								
-                                embed = discord.Embed(description= '```'+table_before+'```', colour=0x98FB98)
+
+                                # New Embeded message (Future Todo: Status colours)
+                                embed = discord.Embed(description='```'+table_before+'```', colour=0x98FB98)
                                 embed.set_thumbnail(url=iconURL)
                                 embed.set_author(name=server['name'], url='', icon_url='')
                                 await message.channel.send(embed=embed)
-
-                                # Original broken formatting
-                                #await message.channel.send(
-                                    #f"__**{server['name']}**__\n```{table_before}````")
-                                # await message.channel.send(
-                                    #f"__**{server_name}**__\n```{table_before}```")
-
 
                                 table_contents.clear()
                                 table_contents.append([origin,
@@ -102,20 +95,14 @@ class MyClient(discord.Client):
                         log.debug(f"Sending status table for {server_name}")
                         table_to_send = tabulate(table_contents, headers=table_header)
 
-                        #log.debug(table_to_send)
-                        #await message.channel.send(f"__**{server_name}**__\n```{table_to_send}```")
-
-
                         log.debug(table_to_send)
                         
-                        # New Embeded message (Future Todo: Status colours)
+                        # TODO Status colours
                         embed = discord.Embed(description= '```'+table_to_send+'```', colour=0x98FB98)
                         embed.set_thumbnail(url=iconURL)
                         embed.set_author(name=server['name'], url='', icon_url='')
                         await message.channel.send(embed=embed)
 
-                        # Original broken formatting
-                        #await message.channel.send(f"__**{server['name']}**__ \n```{table_to_send}````")
 
 def run():
     asyncio.set_event_loop(asyncio.new_event_loop())
