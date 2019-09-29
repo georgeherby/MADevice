@@ -1,3 +1,4 @@
 discord_token=REQUIRED
 # duration_before_alert=OPTIONAL_DEFAULT_20
-# delay_between_checks=OPTIONAL_DEFAULT_200
+# delay_between_checks=OPTIONAL_DEFAULT_20
+# trim_table_content=True

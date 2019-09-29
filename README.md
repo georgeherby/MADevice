@@ -20,7 +20,7 @@ git
 * Once you have a venv run from in the MADevice folder `<PATH_TO_VENV_BIN>/pip[3[.7]] install -r requirements.txt`
 * Ensure you have entered your server details and name into `servers.json` (take a copy from `servers.json.example`)
     * This should be the `IP` and the `port`.
-    * If you have set authentication for MADmin, ensure you add `username` and `password` to each of the servers in `servers.json
+    * If you have set authentication for MADmin, ensure you add `username` and `password` to each of the servers in `servers.json`
 * Create `config.ini` from `config.ini.example` and populate the value which says `REQUIRED`
     * Optional config
         * `duration_before_alert` this is the number of minutes that MAD has not received any proto data for, before it raises an alert (Default: 20 minutes)

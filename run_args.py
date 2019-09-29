@@ -13,6 +13,9 @@ def get_args():
     parser.add_argument('-dbc', '--delay_between_checks', required=False, default=20, type=int,
                         help='Enter time you want to wait before rechecking status (Default: 20)')
 
+    parser.add_argument('-ttc', '--trim_table_content', required=False, default=False, type=bool,
+                        help='Enable to trim the contents of !status (helps with mobile view)')
+
     verbose = parser.add_mutually_exclusive_group()
     verbose.add_argument('-v',
                          help='Show debug messages',

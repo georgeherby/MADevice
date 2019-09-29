@@ -1,6 +1,7 @@
 import json
 import logging
 import time
+import traceback
 from datetime import datetime, timedelta
 
 import requests
@@ -41,29 +42,32 @@ def alert_thread():
                     r = connector.get_status(server)
 
                     for device in r:
-                        device_origin = str(device['origin']).title()
-                        device_last_proto_datetime = device['lastProtoDateTime']
-                        routemanager = str(device['routemanager']).title()
+                        device_origin = str(device.get('origin', '')).title()
+                        device_last_proto_datetime = device.get('lastProtoDateTime', '')
+                        routemanager = str(device.get('routemanager', '')).title()
 
                         log.info(f"Checking {device_origin} device")
                         log.debug(device)
-                        if len(device_last_proto_datetime) > 0:
-                            parsed_device_last_proto_datetime = parse(device_last_proto_datetime)
-                            latest_acceptable_datetime = (datetime.now() - timedelta(minutes=duration_before_alert))
-                            log.debug(f"{device_origin} Last Proto Date Time: {parsed_device_last_proto_datetime}")
-                            log.debug(f"{device_origin} Last Acceptable Time: {latest_acceptable_datetime}")
+                        if routemanager.lower() != 'idle':
+                            # TODO Remove the 'None' check once MAD has the chagne to remove 'None' from /get_status
+                            if len(device_last_proto_datetime) > 0 and device_last_proto_datetime is not None and device_last_proto_datetime != 'None':
+                                parsed_device_last_proto_datetime = parse(device_last_proto_datetime)
+                                latest_acceptable_datetime = (datetime.now() - timedelta(minutes=duration_before_alert))
+                                log.debug(f"{device_origin} Last Proto Date Time: {parsed_device_last_proto_datetime}")
+                                log.debug(f"{device_origin} Last Acceptable Time: {latest_acceptable_datetime}")
 
-                            if parsed_device_last_proto_datetime < latest_acceptable_datetime:
-                                log.info(f"{device_origin} breached the time threshold")
-                                description = description + f"{device_origin.capitalize()} - {routemanager} -> (Last Received: {parsed_device_last_proto_datetime.strftime('%H:%M')})\n"
-                                log.debug(f"Current description: {description}")
+                                if parsed_device_last_proto_datetime < latest_acceptable_datetime:
+                                    log.info(f"{device_origin} breached the time threshold")
+                                    description = description + f"{device_origin.capitalize()} - {routemanager} -> (Last Received: {parsed_device_last_proto_datetime.strftime('%H:%M')})\n "
+                                    log.debug(f"Current description: {description}")
+                                else:
+                                    log.info(f"{device_origin} did not breach the time threshold")
                             else:
-                                log.info(f"{device_origin} did not breach the time threshold")
+                                description = description + f"{device_origin.capitalize()} (Last Received: Not known)\n"
                         else:
-                            description = description + f"{device_origin.capitalize()} (Last Received: Not known)\n"
+                            log.info("Ignoring as device is set to idle")
 
                     if len(description) > len(description_initial):
-
                         if 'alert_role_id' in server:
                             discord_post_data['content'] = f"Problem on {server['name']} <@&{server['alert_role_id']}>"
 
@@ -88,9 +92,10 @@ def alert_thread():
                         else:
                             log.debug("Message posted to Discord with success")
                     else:
-                        log.debug("There is no errors to report, going to sleep..")
+                        log.debug("There is no errors to report, going to sleep")
 
-            log.info("All device checks completed, going to sleep!")
+            log.info("All device checks completed, going to sleep")
             time.sleep(60 * delay_between_checks)
     except Exception as ex:
+        traceback.print_exc()
         log.error('Issues in the checker tread exception was: ' + str(ex))

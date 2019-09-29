@@ -28,24 +28,39 @@ class MyClient(discord.Client):
                 servers_config_json = json.load(f)
                 for server in servers_config_json:
                     if message.channel.id == int(server['status_channel_id']):
-                        log.info(f"Status request received for {server['name']}")
+                        server_name = server['name']
+                        table_header = ['Origin', 'Route', 'Pos', 'Time']
+                        table_contents = []
 
+                        log.info(f"Status request received for {server_name}")
+                        log.debug("Calling /get_status for current status")
                         device_status_response = connector.get_status(server)
 
-                        table_header = ['Origin', 'Route', 'Pos', 'Last Data']
-                        table_contents = []
                         for device in device_status_response:
+                            table_before = tabulate(table_contents, headers=table_header)
+                            routemanager = device.get('routemanager', '') if device.get('routemanager', 'Not Defined') is not None else 'Not Defined'
+                            origin = device.get('origin', '') if device.get('origin', '') is not None else ''
+                            route_pos = device.get('routePos', '?') if device.get('routePos', '?') is not None else '?'
+                            route_max = device.get('routeMax', '?') if device.get('routeMax', '?') is not None else '?'
+                            lastProtoDateTime = device.get('lastProtoDateTime', '') if device.get('lastProtoDateTime', '') is not None else ''
+                            number_front_chars = 7
+                            number_end_chars = 5
+
                             try:
-                                datetime_from_status_json = parser.parse(device['lastProtoDateTime'])
+                                datetime_from_status_json = parser.parse(lastProtoDateTime)
                                 formatted_device_last_proto_time = datetime_from_status_json.strftime("%H:%M")
                             except Exception:
                                 formatted_device_last_proto_time = 'Unknown'
 
-                            table_before = tabulate(table_contents, headers=table_header)
+                            if args.trim_table_content:
+                                if len(routemanager) > (number_front_chars + number_end_chars):
+                                    routemanager = f"{routemanager[:number_front_chars]}..{routemanager[-number_end_chars:]}"
+                                if len(origin) > (number_front_chars + number_end_chars):
+                                    origin = f"{origin[:number_front_chars]}..{origin[-number_end_chars:]}"
 
-                            table_contents.append([device['origin'],
-                                                   device['routemanager'],
-                                                   f"{device['routePos']}/{device['routeMax']}",
+                            table_contents.append([origin,
+                                                   routemanager,
+                                                   f"{route_pos}/{route_max}",
                                                    formatted_device_last_proto_time
                                                    ])
 
@@ -73,16 +88,23 @@ class MyClient(discord.Client):
                                 # Original broken formatting
                                 #await message.channel.send(
                                     #f"__**{server['name']}**__\n```{table_before}````")
+                                # await message.channel.send(
+                                    #f"__**{server_name}**__\n```{table_before}```")
+
 
                                 table_contents.clear()
-                                table_contents.append([device['origin'],
-                                                       device['routemanager'],
-                                                       f"{device['routePos']}/{device['routeMax']}",
+                                table_contents.append([origin,
+                                                       routemanager,
+                                                       f"{route_pos}/{route_max}",
                                                        formatted_device_last_proto_time
                                                        ])
 
-                        log.debug(f"Sending status table for {server['name']}")
+                        log.debug(f"Sending status table for {server_name}")
                         table_to_send = tabulate(table_contents, headers=table_header)
+
+                        #log.debug(table_to_send)
+                        #await message.channel.send(f"__**{server_name}**__\n```{table_to_send}```")
+
 
                         log.debug(table_to_send)
                         
