@@ -12,6 +12,7 @@ from run_args import get_args
 args = get_args()
 log = logging.getLogger('__name__')
 
+iconURL = 'https://raw.githubusercontent.com/Map-A-Droid/MAD/master/madmin/static/mad_banner_trans.png'
 
 class MyClient(discord.Client):
 
@@ -77,8 +78,19 @@ class MyClient(discord.Client):
                             if table_after_len > 2000:
                                 log.info("Table size was greater than 2000. Commence table split.")
                                 log.debug(table_before)
-                                await message.channel.send(
-                                    f"__**{server_name}**__\n```{table_before}```")
+								
+                                # New Embeded message (Future Todo: Status colours)								
+                                embed = discord.Embed(description= '```'+table_before+'```', colour=0x98FB98)
+                                embed.set_thumbnail(url=iconURL)
+                                embed.set_author(name=server['name'], url='', icon_url='')
+                                await message.channel.send(embed=embed)
+
+                                # Original broken formatting
+                                #await message.channel.send(
+                                    #f"__**{server['name']}**__\n```{table_before}````")
+                                # await message.channel.send(
+                                    #f"__**{server_name}**__\n```{table_before}```")
+
 
                                 table_contents.clear()
                                 table_contents.append([origin,
@@ -89,9 +101,21 @@ class MyClient(discord.Client):
 
                         log.debug(f"Sending status table for {server_name}")
                         table_to_send = tabulate(table_contents, headers=table_header)
-                        log.debug(table_to_send)
-                        await message.channel.send(f"__**{server_name}**__\n```{table_to_send}```")
 
+                        #log.debug(table_to_send)
+                        #await message.channel.send(f"__**{server_name}**__\n```{table_to_send}```")
+
+
+                        log.debug(table_to_send)
+                        
+                        # New Embeded message (Future Todo: Status colours)
+                        embed = discord.Embed(description= '```'+table_to_send+'```', colour=0x98FB98)
+                        embed.set_thumbnail(url=iconURL)
+                        embed.set_author(name=server['name'], url='', icon_url='')
+                        await message.channel.send(embed=embed)
+
+                        # Original broken formatting
+                        #await message.channel.send(f"__**{server['name']}**__ \n```{table_to_send}````")
 
 def run():
     asyncio.set_event_loop(asyncio.new_event_loop())
