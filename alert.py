@@ -41,7 +41,7 @@ def alert_thread():
                     log.info(f"Starting check on {server['ip']}")
                     r = connector.get_status(server)
 
-                    for device in r:
+                    for device in r or []:
                         device_origin = str(device.get('origin', '')).title()
                         device_last_proto_datetime = device.get('lastProtoDateTime', '')
                         routemanager = str(device.get('routemanager', '')).title()

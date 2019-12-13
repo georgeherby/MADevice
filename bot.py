@@ -39,7 +39,7 @@ class MyClient(discord.Client):
                         log.debug("Calling /get_status for current status")
                         device_status_response = connector.get_status(server)
 
-                        for device in device_status_response:
+                        for device in device_status_response or []:
                             table_before = tabulate(table_contents, headers=table_header)
                             routemanager = device.get('routemanager', '') if device.get('routemanager',
                                                                                         'Not Defined') is not None else 'Not Defined'

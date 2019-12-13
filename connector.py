@@ -1,3 +1,4 @@
+import json
 import logging
 
 import requests
@@ -28,6 +29,21 @@ def get_status(server):
     except requests.exceptions.Timeout:
         log.error("Connection to get_status timed-out")
     except requests.exceptions.RequestException as e:
+        log.info("Sending alert to Discord as server is not available")
+        discord_post_data = {
+            "username": "MAD Alert",
+            "avatar_url": "https://www.iconsdb.com/icons/preview/red/exclamation-xxl.png",
+            "embeds": [{
+                "title": f"Server unavailable",
+                "color": 16711680,
+                "description": "Server " + server["name"] + " is not available to get status",
+            }]
+        }
+        response = requests.post(
+            server['webhook'], data=json.dumps(discord_post_data),
+            headers={'Content-Type': 'application/json'}
+        )
+        log.debug(response)
         log.error(str(e))
     except Exception as e:
         log.error("General error {0}".format(e))
