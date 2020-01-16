@@ -1,9 +1,9 @@
-# Basic docker image for RocketMap
+# Basic docker image for MADevice
 # Usage:
-#   docker build -t rocketmap .
-#   docker run -d -P rocketmap -a ptc -u YOURUSERNAME -p YOURPASSWORD -l "Seattle, WA" -st 10 --gmaps-key CHECKTHEWIKI
+#   docker build -t madevice .
+#   docker run -d -ti --name=madevice --restart=unless-stopped madevice
 
-FROM python:3.6
+FROM python:3.7
 
 # Working directory for the application
 WORKDIR /usr/src/app
