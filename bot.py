@@ -41,9 +41,9 @@ class MyClient(discord.Client):
 
                         for device in device_status_response or []:
                             table_before = tabulate(table_contents, headers=table_header)
-                            routemanager = device.get('routemanager', '') if device.get('routemanager',
+                            routemanager = device.get('rmname', '') if device.get('rmname',
                                                                                         'Not Defined') is not None else 'Not Defined'
-                            origin = device.get('origin', '') if device.get('origin', '') is not None else ''
+                            origin = device.get('name', '') if device.get('rmname', '') is not None else ''
                             route_pos = device.get('routePos', '?') if device.get('routePos', '?') is not None else '?'
                             route_max = device.get('routeMax', '?') if device.get('routeMax', '?') is not None else '?'
                             lastProtoDateTime = device.get('lastProtoDateTime', '') if device.get('lastProtoDateTime',
@@ -52,7 +52,7 @@ class MyClient(discord.Client):
                             number_end_chars = 5
 
                             try:
-                                datetime_from_status_json = parser.parse(lastProtoDateTime)
+                                datetime_from_status_json = datetime.fromtimestamp(lastProtoDateTime)
                                 formatted_device_last_proto_time = datetime_from_status_json.strftime("%H:%M")
                                 latest_acceptable_datetime = (datetime.now() - timedelta(minutes=args.duration_before_alert))
                                 log.debug(f"{origin} Last Proto Date Time: {datetime_from_status_json}")
