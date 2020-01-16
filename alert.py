@@ -42,16 +42,16 @@ def alert_thread():
                     r = connector.get_status(server)
 
                     for device in r or []:
-                        device_origin = str(device.get('origin', '')).title()
+                        device_origin = str(device.get('name', '')).title()
                         device_last_proto_datetime = device.get('lastProtoDateTime', '')
-                        routemanager = str(device.get('routemanager', '')).title()
+                        routemanager = str(device.get('rmname', '')).title()
 
                         log.info(f"Checking {device_origin} device")
                         log.debug(device)
                         if routemanager.lower() != 'idle':
                             # TODO Remove the 'None' check once MAD has the chagne to remove 'None' from /get_status
-                            if device_last_proto_datetime is not None and device_last_proto_datetime != 'None' and len(device_last_proto_datetime) > 0:
-                                parsed_device_last_proto_datetime = parse(device_last_proto_datetime)
+                            if device_last_proto_datetime is not None and device_last_proto_datetime != 'None' and device_last_proto_datetime > 0:
+                                parsed_device_last_proto_datetime = datetime.fromtimestamp(device_last_proto_datetime)
                                 latest_acceptable_datetime = (datetime.now() - timedelta(minutes=duration_before_alert))
                                 log.debug(f"{device_origin} Last Proto Date Time: {parsed_device_last_proto_datetime}")
                                 log.debug(f"{device_origin} Last Acceptable Time: {latest_acceptable_datetime}")
