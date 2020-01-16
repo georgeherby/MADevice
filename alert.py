@@ -5,7 +5,6 @@ import traceback
 from datetime import datetime, timedelta
 
 import requests
-from dateutil.parser import parse
 
 import connector
 from run_args import get_args
@@ -52,7 +51,7 @@ def alert_thread():
                             # TODO Remove the 'None' check once MAD has the chagne to remove 'None' from /get_status
                             if device_last_proto_datetime is not None and device_last_proto_datetime != 'None' and device_last_proto_datetime > 0:
                                 parsed_device_last_proto_datetime = datetime.fromtimestamp(device_last_proto_datetime)
-                                latest_acceptable_datetime = (datetime.now() - timedelta(minutes=duration_before_alert))
+                                latest_acceptable_datetime = (datetime.utcnow() - timedelta(minutes=duration_before_alert))
                                 log.debug(f"{device_origin} Last Proto Date Time: {parsed_device_last_proto_datetime}")
                                 log.debug(f"{device_origin} Last Acceptable Time: {latest_acceptable_datetime}")
 
