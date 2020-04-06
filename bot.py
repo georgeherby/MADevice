@@ -4,6 +4,7 @@ import logging
 from datetime import datetime, timedelta
 
 import discord
+from dateutil import parser
 from tabulate import tabulate
 
 import connector
@@ -53,7 +54,7 @@ class MyClient(discord.Client):
                             try:
                                 datetime_from_status_json = datetime.fromtimestamp(lastProtoDateTime)
                                 formatted_device_last_proto_time = datetime_from_status_json.strftime("%H:%M")
-                                latest_acceptable_datetime = (datetime.utcnow() - timedelta(minutes=args.duration_before_alert))
+                                latest_acceptable_datetime = (datetime.now() - timedelta(minutes=args.duration_before_alert))
                                 log.debug(f"{origin} Last Proto Date Time: {datetime_from_status_json}")
                                 log.debug(f"{origin} Last Acceptable Time: {latest_acceptable_datetime}")
 
