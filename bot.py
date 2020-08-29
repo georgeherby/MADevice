@@ -15,7 +15,6 @@ log = logging.getLogger('__name__')
 
 iconURL = 'https://raw.githubusercontent.com/Map-A-Droid/MAD/master/madmin/static/mad_banner_trans.png'
 
-
 class MyClient(discord.Client):
 
     def __init__(self):
