@@ -70,6 +70,8 @@ def alert_thread():
                     if len(description) > len(description_initial):
                         if 'alert_role_id' in server:
                             discord_post_data['content'] = f"Problem on {server['name']} <@&{server['alert_role_id']}>"
+                        elif 'alert_user_id' in server:
+                            discord_post_data['content'] = f"Problem on {server['name']} <@{server['alert_user_id']}>"
 
                         discord_post_data['embeds'][0]['description'] = description
 
