@@ -8,6 +8,7 @@ import requests
 from dateutil.parser import parse
 
 import connector
+from bot import get_device_name
 from run_args import get_args
 
 args = get_args()
@@ -40,6 +41,8 @@ def alert_thread():
                     discord_post_data['embeds'][0]['description'] = description_initial
                     log.info(f"Starting check on {server['ip']}")
                     r = connector.get_status(server)
+
+                    r.sort(key=get_device_name)
 
                     for device in r or []:
                         device_origin = str(device.get('name', '')).title()
