@@ -85,7 +85,7 @@ class MyClient(discord.Client):
                             table_after_len = len(table_after)
 
                             log.debug(f"{table_before_len} and after {table_after_len}")
-                            log.debug("Error" + str(error_found))
+                            log.debug("Error found: " + str(error_found))
 
                             color = 0xFF6E6E if error_found is True else 0x98FB98
 
