@@ -45,9 +45,9 @@ def alert_thread():
                     r.sort(key=get_name)
 
                     for device in r or []:
-                        device_origin = str(get_name).title()
+                        device_origin = str(get_name(device)).title()
                         device_last_proto_datetime = get_last_updated(device)
-                        routemanager = str(get_route_manager_name).title()
+                        routemanager = str(get_route_manager_name(device)).title()
 
                         log.info(f"Checking {device_origin} device")
                         log.debug(device)

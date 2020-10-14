@@ -44,10 +44,10 @@ class MyClient(discord.Client):
 
                         for device in device_status_response or []:
                             table_before = tabulate(table_contents, headers=table_header)
-                            route_manager = get_route_manager_name if get_route_manager_name is not None else ''
-                            origin = get_name if get_name is not None else ''
-                            route_pos = get_route_pos if get_route_pos is not None else '?'
-                            route_max = get_route_max if get_route_max is not None else '?'
+                            route_manager = get_route_manager_name(device) if get_route_manager_name(device) is not None else ''
+                            origin = get_name(device) if get_name(device) is not None else ''
+                            route_pos = get_route_pos(device) if get_route_pos(device) is not None else '?'
+                            route_max = get_route_max(device) if get_route_max(device) is not None else '?'
                             last_proto_date_time = get_last_updated(device) if get_last_updated(device) is not None else ''
                             number_front_chars = 6
                             number_end_chars = 5
