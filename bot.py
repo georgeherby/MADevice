@@ -15,6 +15,7 @@ log = logging.getLogger('__name__')
 
 iconURL = 'https://raw.githubusercontent.com/Map-A-Droid/MAD/master/madmin/static/mad_banner_trans.png'
 
+
 class MyClient(discord.Client):
 
     def __init__(self):
@@ -37,6 +38,9 @@ class MyClient(discord.Client):
                         log.info(f"Status request received for {server_name}")
                         log.debug("Calling /get_status for current status")
                         device_status_response = connector.get_status(server)
+
+                        # Sort by name ascending
+                        device_status_response.sort(key=get_device_name)
 
                         for device in device_status_response or []:
                             table_before = tabulate(table_contents, headers=table_header)
@@ -116,6 +120,10 @@ class MyClient(discord.Client):
                         embed.set_thumbnail(url=iconURL)
                         embed.set_author(name=server['name'], url='', icon_url='')
                         await message.channel.send(embed=embed)
+
+
+def get_device_name(device):
+    return device.get('name', '')
 
 
 def run():
