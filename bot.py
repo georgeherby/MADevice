@@ -4,10 +4,10 @@ import logging
 from datetime import datetime, timedelta
 
 import discord
-from dateutil import parser
 from tabulate import tabulate
 
 import connector
+from device import get_name, get_route_manager_name, get_route_pos, get_route_max, get_last_updated
 from run_args import get_args
 
 args = get_args()
@@ -40,22 +40,20 @@ class MyClient(discord.Client):
                         device_status_response = connector.get_status(server)
 
                         # Sort by name ascending
-                        device_status_response.sort(key=get_device_name)
+                        device_status_response.sort(key=get_name)
 
                         for device in device_status_response or []:
                             table_before = tabulate(table_contents, headers=table_header)
-                            routemanager = device.get('rmname', '') if device.get('rmname',
-                                                                                        'Not Defined') is not None else 'Not Defined'
-                            origin = device.get('name', '') if device.get('rmname', '') is not None else ''
-                            route_pos = device.get('routePos', '?') if device.get('routePos', '?') is not None else '?'
-                            route_max = device.get('routeMax', '?') if device.get('routeMax', '?') is not None else '?'
-                            lastProtoDateTime = device.get('lastProtoDateTime', '') if device.get('lastProtoDateTime',
-                                                                                                  '') is not None else ''
+                            route_manager = get_route_manager_name(device) if get_route_manager_name(device) is not None else ''
+                            origin = get_name(device) if get_name(device) is not None else ''
+                            route_pos = get_route_pos(device) if get_route_pos(device) is not None else '?'
+                            route_max = get_route_max(device) if get_route_max(device) is not None else '?'
+                            last_proto_date_time = get_last_updated(device) if get_last_updated(device) is not None else ''
                             number_front_chars = 6
                             number_end_chars = 5
 
                             try:
-                                datetime_from_status_json = datetime.fromtimestamp(lastProtoDateTime)
+                                datetime_from_status_json = datetime.fromtimestamp(last_proto_date_time)
                                 formatted_device_last_proto_time = datetime_from_status_json.strftime("%H:%M")
                                 latest_acceptable_datetime = (datetime.now() - timedelta(minutes=args.duration_before_alert))
                                 log.debug(f"{origin} Last Proto Date Time: {datetime_from_status_json}")
@@ -65,17 +63,18 @@ class MyClient(discord.Client):
                                     error_found = True
 
                             except Exception as e:
+                                log.info(e)
                                 error_found = True
                                 formatted_device_last_proto_time = 'Unkwn'
 
                             if args.trim_table_content:
-                                if len(routemanager) > (number_front_chars + number_end_chars):
-                                    routemanager = f"{routemanager[:number_front_chars]}..{routemanager[-number_end_chars:]}"
+                                if len(route_manager) > (number_front_chars + number_end_chars):
+                                    route_manager = f"{route_manager[:number_front_chars]}..{route_manager[-number_end_chars:]}"
                                 if len(origin) > (number_front_chars + number_end_chars):
                                     origin = f"{origin[:number_front_chars]}..{origin[-number_end_chars:]}"
 
                             table_contents.append([origin,
-                                                   routemanager,
+                                                   route_manager,
                                                    f"{route_pos}/{route_max}",
                                                    formatted_device_last_proto_time
                                                    ])
@@ -86,7 +85,7 @@ class MyClient(discord.Client):
                             table_after_len = len(table_after)
 
                             log.debug(f"{table_before_len} and after {table_after_len}")
-                            log.debug("Error" + str(error_found))
+                            log.debug("Error found: " + str(error_found))
 
                             color = 0xFF6E6E if error_found is True else 0x98FB98
 
@@ -105,7 +104,7 @@ class MyClient(discord.Client):
 
                                 table_contents.clear()
                                 table_contents.append([origin,
-                                                       routemanager,
+                                                       route_manager,
                                                        f"{route_pos}/{route_max}",
                                                        formatted_device_last_proto_time
                                                        ])
@@ -120,10 +119,6 @@ class MyClient(discord.Client):
                         embed.set_thumbnail(url=iconURL)
                         embed.set_author(name=server['name'], url='', icon_url='')
                         await message.channel.send(embed=embed)
-
-
-def get_device_name(device):
-    return device.get('name', '')
 
 
 def run():
