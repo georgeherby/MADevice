@@ -8,7 +8,7 @@ import requests
 from dateutil.parser import parse
 
 import connector
-from bot import get_device_name
+from device import get_name, get_route_manager_name, get_last_updated
 from run_args import get_args
 
 args = get_args()
@@ -42,17 +42,17 @@ def alert_thread():
                     log.info(f"Starting check on {server['ip']}")
                     r = connector.get_status(server)
 
-                    r.sort(key=get_device_name)
+                    r.sort(key=get_name)
 
                     for device in r or []:
-                        device_origin = str(device.get('name', '')).title()
-                        device_last_proto_datetime = device.get('lastProtoDateTime', '')
-                        routemanager = str(device.get('rmname', '')).title()
+                        device_origin = str(get_name).title()
+                        device_last_proto_datetime = get_last_updated(device)
+                        routemanager = str(get_route_manager_name).title()
 
                         log.info(f"Checking {device_origin} device")
                         log.debug(device)
                         if routemanager.lower() != 'idle':
-                            # TODO Remove the 'None' check once MAD has the chagne to remove 'None' from /get_status
+                            # TODO Remove the 'None' check once MAD has the change to remove 'None' from /get_status
                             if device_last_proto_datetime is not None and device_last_proto_datetime != 'None' and device_last_proto_datetime > 0:
                                 parsed_device_last_proto_datetime = datetime.fromtimestamp(device_last_proto_datetime)
                                 latest_acceptable_datetime = (datetime.now() - timedelta(minutes=duration_before_alert))
@@ -61,7 +61,8 @@ def alert_thread():
 
                                 if parsed_device_last_proto_datetime < latest_acceptable_datetime:
                                     log.info(f"{device_origin} breached the time threshold")
-                                    description = description + f"{device_origin.capitalize()} - {routemanager} -> (Last Received: {parsed_device_last_proto_datetime.strftime('%H:%M')})\n "
+                                    description = description + f"{device_origin.capitalize()} - {routemanager} -> (" \
+                                                                f"Last Received: {parsed_device_last_proto_datetime.strftime('%H:%M')})\n "
                                     log.debug(f"Current description: {description}")
                                 else:
                                     log.info(f"{device_origin} did not breach the time threshold")
