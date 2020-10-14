@@ -123,7 +123,7 @@ class MyClient(discord.Client):
 
 
 def get_device_name(device):
-    return device.get('rmname', '')
+    return device.get('name', '')
 
 
 def run():
