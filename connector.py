@@ -30,13 +30,21 @@ def get_status(server):
         log.error("Connection to get_status timed-out")
     except requests.exceptions.RequestException as e:
         log.info("Sending alert to Discord as server is not available")
+
+        if 'alert_role_id' in server:
+            description = f"<@{server['alert_role_id']}> Server {server['name']} is not available"
+        elif 'alert_user_id' in server:
+            description = f"<@{server['alert_user_id']}> Server {server['name']} is not available"
+        else:
+            description = f"Server {server['name']} is not available"
+
         discord_post_data = {
             "username": "MAD Alert",
             "avatar_url": "https://www.iconsdb.com/icons/preview/red/exclamation-xxl.png",
             "embeds": [{
                 "title": f"Server unavailable",
                 "color": 16711680,
-                "description": "Server " + server["name"] + " is not available to get status",
+                "description": description,
             }]
         }
         response = requests.post(
