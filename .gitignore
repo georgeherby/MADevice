@@ -3,3 +3,4 @@ servers.json
 .idea/
 *.pyc
 *.log
+/venv/
