@@ -99,29 +99,30 @@ def alert_thread():
                         else:
                             log.info("Ignoring as device is set to idle")
 
-                    discord_post_data['content'] = f"Problem on {server['name']} {' '.join(list(set(ids_to_tag)))}"
+                    if len(ids_to_tag) > 0:
+                        discord_post_data['content'] = f"Problem on {server['name']} {' '.join(list(set(ids_to_tag)))}"
 
-                    discord_post_data['embeds'][0]['description'] = description
+                        discord_post_data['embeds'][0]['description'] = description
 
-                    time_of_next_check = (datetime.now() + timedelta(minutes=delay_between_checks)).strftime(
-                        '%H:%M')
+                        time_of_next_check = (datetime.now() + timedelta(minutes=delay_between_checks)).strftime(
+                            '%H:%M')
 
-                    discord_post_data['embeds'][0]['footer']['text'] = f"Next check will be at {time_of_next_check}"
+                        discord_post_data['embeds'][0]['footer']['text'] = f"Next check will be at {time_of_next_check}"
 
-                    log.debug(discord_post_data)
-                    log.info("Sending alert to Discord as one or more devices has exceeded the threshold")
-                    response = requests.post(
-                        server['webhook'], data=json.dumps(discord_post_data),
-                        headers={'Content-Type': 'application/json'}
-                    )
-                    log.debug(response)
-                    if response.status_code != 204:
-                        log.error(
-                            'Post to Discord webhook returned an error %s, the response is:\n%s'
-                            % (response.status_code, response.text)
+                        log.debug(discord_post_data)
+                        log.info("Sending alert to Discord as one or more devices has exceeded the threshold")
+                        response = requests.post(
+                            server['webhook'], data=json.dumps(discord_post_data),
+                            headers={'Content-Type': 'application/json'}
                         )
-                    else:
-                        log.debug("Message posted to Discord with success")
+                        log.debug(response)
+                        if response.status_code != 204:
+                            log.error(
+                                'Post to Discord webhook returned an error %s, the response is:\n%s'
+                                % (response.status_code, response.text)
+                            )
+                        else:
+                            log.debug("Message posted to Discord with success")
                 else:
                     log.debug("There is no errors to report, going to sleep")
 
