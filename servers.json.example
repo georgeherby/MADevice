@@ -1,37 +1,37 @@
 [
   {
-    "ip": "https://127.0.0.1:6100",
+    "ip": "http://127.0.0.1:6100",
     "name": "Server 1",
     "webhook": "https://discordapp.com/api/webhooks/556067789635584000/stuffs",
     "status_channel_id": 1234567891234567,
-    "alert_role_id": 268467438465712128,
+    "alert_role_id": 268467438465712128, //Make sure the role has "Allow anyone to @mention this role" enabled
     "username": "username",
-    "password": "password",
-    "alert_role_id": 21345678543221123 //Make sure the role has "Allow anyone to @mention this role" enabled
+    "password": "password"
   },
   {
     "ip": "http://127.0.0.1:6101",
     "name": "Server 2",
-    "webhook": "https://discordapp.com/api/webhooks/556067789635584000/stuffs2",
+    "webhook": "https://discordapp.com/api/webhooks/556067789635584000/stuffs",
     "status_channel_id": 1234567891234567,
-    "alert_role_id": 268467438465712128,
-    "alert_role_id": 21345678543221123 //Make sure the role has "Allow anyone to @mention this role" enabled
+    "alert_role_id": 268467438465712128, //Make sure the role has "Allow anyone to @mention this role" enabled
+    "username": "username",
+    "password": "password"
   },
   {
     "ip": "http://127.0.0.1:6102",
     "name": "Server 3",
-    "webhook": "https://discordapp.com/api/webhooks/556067789635584000/stuffs3",
+    "webhook": "https://discordapp.com/api/webhooks/556067789635584000/stuffs",
     "status_channel_id": 1234567891234567,
-    "alert_role_id": 268467438465712128,
+    "alert_role_id": 268467438465712128, //Make sure the role has "Allow anyone to @mention this role" enabled
     "username": "username",
     "password": "password"
   }
   {
-    "ip": "http://127.0.0.1:6102",
-    "name": "Server 3",
-    "webhook": "https://discordapp.com/api/webhooks/556067789635584000/stuffs3",
+    "ip": "http://127.0.0.1:6103",
+    "name": "Server 4",
+    "webhook": "https://discordapp.com/api/webhooks/556067789635584000/stuffs",
     "status_channel_id": 1234567891234567,
-    "alert_user_id": 136684206603501578,
+    "alert_role_id": 268467438465712128, //Make sure the role has "Allow anyone to @mention this role" enabled
     "username": "username",
     "password": "password"
   }
