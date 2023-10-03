@@ -3,7 +3,7 @@
 #   docker build -t madevice .
 #   docker run -d -ti --name=madevice --restart=unless-stopped madevice
 
-FROM python:3.7
+FROM python:3.12
 
 # Working directory for the application
 WORKDIR /usr/src/app
